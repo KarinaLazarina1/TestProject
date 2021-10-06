@@ -13,7 +13,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class AdvertisementAssembler extends RepresentationModelAssemblerSupport<AdvertisementDto, AdvertisementModel> {
     public static final String GET_ADVERTISEMENT = "get_advertisement";
-    public static final String GET_ADVERTISEMENT_BY_SENDER_NAME = "get_advertisement_by_sender_name";
+    public static final String GET_ADVERTISEMENT_BY_ID = "get_advertisement_by_id";
+    public static final String GET_ADVERTISEMENT_BY_SENDER_NAME = "get_advertisement_by_sender";
     public static final String CREATE_ADVERTISEMENT = "create_advertisement";
     public static final String UPDATE_ADVERTISEMENT = "update_advertisement";
     public static final String DELETE_ADVERTISEMENT = "delete_advertisement";
@@ -28,10 +29,11 @@ public class AdvertisementAssembler extends RepresentationModelAssemblerSupport<
 
         Link get = linkTo(methodOn(AdvertisementController.class).getAdvertisement(0)).withRel(GET_ADVERTISEMENT);
         Link getByName = linkTo(methodOn(AdvertisementController.class).getAdvertisementBySender(entity.getSenderName())).withRel(GET_ADVERTISEMENT_BY_SENDER_NAME);
+        Link getById = linkTo(methodOn(AdvertisementController.class).getAdvertisementById(entity.getId())).withRel(GET_ADVERTISEMENT_BY_ID);
         Link post = linkTo(methodOn(AdvertisementController.class).createAdvertisement(entity)).withRel(CREATE_ADVERTISEMENT);
         Link put = linkTo(methodOn(AdvertisementController.class).updateAdvertisement(entity, entity.getId())).withRel(UPDATE_ADVERTISEMENT);
         Link delete = linkTo(methodOn(AdvertisementController.class).deleteAdvertisement(entity.getId())).withRel(DELETE_ADVERTISEMENT);
 
-        return advertisementModel.add(get, getByName, post, put, delete);
+        return advertisementModel.add(get, getByName, getById, post, put, delete);
     }
 }

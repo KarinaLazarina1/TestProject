@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +40,15 @@ public class AdvertisementService {
 
         log.info("Find advertisement: {}", list);
         return list;
+    }
+
+    public AdvertisementDto getAdvertisementById(long id){
+        log.info("Searching for advertisement...");
+        Advertisement advertisement = advertisementRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Advertisement not found"));
+
+        log.info("Find advertisement: {}", advertisement);
+        return mapToAdvertisementDto(advertisement);
     }
 
     public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto) {
