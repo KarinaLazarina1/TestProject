@@ -2,6 +2,7 @@ package com.avenga.testproject.service;
 
 import com.avenga.testproject.dto.AdvertisementDto;
 import com.avenga.testproject.entity.Advertisement;
+import com.avenga.testproject.exception.AdvertisementNotFoundException;
 import com.avenga.testproject.repository.AdvertisementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,10 +42,11 @@ public class AdvertisementService {
         return list;
     }
 
-    public AdvertisementDto getAdvertisementById(long id){
+    public AdvertisementDto getAdvertisementById(long id) {
         log.info("Searching for advertisement...");
         Advertisement advertisement = advertisementRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Advertisement not found"));
+//                .orElseThrow(()->new RuntimeException("Advertisement not found"));
+                .orElseThrow(AdvertisementNotFoundException::new);
 
         log.info("Find advertisement: {}", advertisement);
         return mapToAdvertisementDto(advertisement);
@@ -61,7 +62,7 @@ public class AdvertisementService {
     public AdvertisementDto updateAdvertisement(long id, AdvertisementDto newAdvertisementDto) {
         log.info("Updating advertisement...");
         advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+                .orElseThrow(AdvertisementNotFoundException::new);
         newAdvertisementDto.setId(id);
         advertisementRepository.save(mapToAdvertisement(newAdvertisementDto));
         log.info("Advertisement updated");
@@ -71,7 +72,7 @@ public class AdvertisementService {
     public AdvertisementDto deleteAdvertisement(long id) {
         log.info("Deleting advertisement...");
         Advertisement advertisement = advertisementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Advertisement not found"));
+                .orElseThrow(AdvertisementNotFoundException::new);
 
         advertisementRepository.delete(advertisement);
         log.info("Advertisement deleted");
@@ -79,13 +80,12 @@ public class AdvertisementService {
     }
 
     private AdvertisementDto mapToAdvertisementDto(Advertisement advertisement) {
-        AdvertisementDto advertisementDto = AdvertisementDto.builder()
+
+        return AdvertisementDto.builder()
                 .id(advertisement.getId())
                 .message(advertisement.getMessage())
                 .senderName(advertisement.getSenderName())
                 .build();
-
-        return advertisementDto;
     }
 
     private Advertisement mapToAdvertisement(AdvertisementDto advertisementDto) {
@@ -93,7 +93,7 @@ public class AdvertisementService {
                 .message(advertisementDto.getMessage())
                 .senderName(advertisementDto.getSenderName())
                 .build();
-        if(advertisementDto.getId() != null){
+        if (advertisementDto.getId() != null) {
             advertisement.setId(advertisementDto.getId());
         }
         return advertisement;

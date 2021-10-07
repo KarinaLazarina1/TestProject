@@ -27,7 +27,7 @@ public class TestProjectApplication {
     public CommandLineRunner run(AdvertisementRepository repository) {
         return (args) -> {
             insertFour(repository);
-            System.out.println(repository.findAll());
+//            System.out.println(repository.findAll());
         };
     }
 
